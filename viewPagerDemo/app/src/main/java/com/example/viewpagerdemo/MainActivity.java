@@ -8,13 +8,17 @@ import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    public ViewPager mViewPager;
+    private ViewPager mViewPager;
+
+    private ViewGroup mDotViewGroup;
 
     public PagerAdapter mPageAdapter = new PagerAdapter() {
         @Override
@@ -47,17 +51,50 @@ public class MainActivity extends AppCompatActivity {
       R.layout.test_third
     };
 
-    public final List<View> mViewList = new ArrayList<>();
+    private List<View> mViewList = new ArrayList<>();
+
+    private List<ImageView> mDotViewList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mViewPager = findViewById(R.id.view_pager);
+        mDotViewGroup = findViewById(R.id.dot_layout);
         for (int i = 0; i < layout_Ids.length; i++) {
             View view = getLayoutInflater().inflate(layout_Ids[i], null);
             mViewList.add(view);
+            ImageView dot = new ImageView(this);
+            dot.setImageResource(R.mipmap.ic_launcher);
+            dot.setMaxWidth(100);
+            dot.setMaxHeight(100);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(20,20);
+            layoutParams.leftMargin = 20;
+            dot.setLayoutParams(layoutParams);
+            mDotViewGroup.addView(dot);
+            mDotViewList.add(dot);
         }
         mViewPager.setAdapter(mPageAdapter);
+        mViewPager.setCurrentItem(0);
+        mDotViewList.get(0).setImageResource(R.mipmap.test);
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                for (int i = 0; i < mDotViewList.size(); i++) {
+                    mDotViewList.get(i).setImageResource((position == i) ? R.mipmap.test : R.mipmap.ic_launcher);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 }
